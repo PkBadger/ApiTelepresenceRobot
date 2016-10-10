@@ -6,6 +6,6 @@ def callbackDirection(motorL,motorR):
     print "direction "+motorR +" "+ motorL
 def callbackCamera(x,y):
     print "x= "+x+" y= "+y
-url = "localhost:8888/wsRPI"
+url = "10.33.10.18:8888/wsRPI"
 
 data = GetData(url,callbackSpeed,callbackDirection,callbackCamera)

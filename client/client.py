@@ -10,6 +10,7 @@ class Client:
     def __init__(self,url,callback):
         websocket.enableTrace(True)
         urlString = "ws://" + url
+        print(urlString)
         ws = websocket.WebSocketApp(urlString,
                                     on_message = callback,
                                     on_error = self.on_error,
@@ -34,7 +35,7 @@ class GetData:
         self.speed = speed
         self.direction = direction
         self.camera = camera
-        client = Client("localhost:8888/wsRPI",self.on_message)
+        client = Client(url,self.on_message)
 
     def on_message(self,ws,message):
         message = json.loads(message)
