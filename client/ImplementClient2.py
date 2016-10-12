@@ -20,9 +20,8 @@ def callbackDirection(motorL,motorR):
     print "direction "+motorR +" "+ motorL
 def callbackCamera(x,y):
     print "x= "+x+" y= "+y
-    pwmX.ChangeDutyCycle(x)
-    pwmY.ChangeDutyCycle(y)
-
+    pwmX.ChangeDutyCycle(float(x))
+    pwmY.ChangeDutyCycle(float(y))
 url = "10.33.28.197:8888/wsRPI"
 
 data = GetData(url,callbackSpeed,callbackDirection,callbackCamera)

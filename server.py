@@ -35,14 +35,17 @@ class MainHandler(tornado.web.RequestHandler):
 #Save Raspberry clients
 class SocketRPIHandler(websocket.WebSocketHandler):
     def check_origin(self, origin):
+        print("origin")
         return True
 
     def open(self):
+        print("open")
         if self not in clRpi:
             clRpi.append(self)
         print(clRpi)
 
     def on_close(self):
+        print("on_close")
         if self in clRpi:
             clRpi.remove(self)
 
@@ -125,8 +128,10 @@ class SpeedSensorHandler(websocket.WebSocketHandler):
 class CameraPosHandler(websocket.WebSocketHandler):
     def get(self):
         X = self.get_argument("X")
+        #http://localhost:8888/cameraPos?X=100&Y=100
         Y = self.get_argument("Y")
         data = {"action":"camera","X":X,"Y":Y}
+        print(data)
         for c in clRpi:
             c.write_message(data)
 
@@ -154,7 +159,7 @@ def main():
         xsrf_cookies=True,
         debug=options.debug,
         )
-    app.listen(options.port)
+    app.listen(8888)
     tornado.ioloop.IOLoop.current().start()
 
 
