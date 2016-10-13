@@ -1,6 +1,7 @@
+#!/usr/bin/python
+#-*- coding: utf-8 -*-
 from client import GetData
 import RPi.GPIO as GPIO
- # -*- coding: utf-8 -*-
 import time             #libreria time para delays
 from smbus2 import SMBus
 import smbus2
@@ -18,6 +19,7 @@ def writeBlock(address,register,data):
                         flag=1
 
 
+bus = smbus2.SMBus(1) #Master
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(27, GPIO.OUT)
 pwmX = GPIO.PWM(27, 100)
@@ -32,8 +34,9 @@ pwmX.ChangeDutyCycle(13)
 pwmY.ChangeDutyCycle(13)
 
 def callbackSpeedDir(motorL,motorR,dirL,dirR):
+
     print "speed "+motorR +" "+ motorL + " " + dirL + " "+ dirR
-    data = [motorR,motorL]
+    data = [int(float((motorR))),int(float(motorL))]
     writeBlock(arduino,0,data)
 
 
