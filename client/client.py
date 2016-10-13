@@ -31,17 +31,14 @@ class Client:
 #-----------------------------------------#
 
 class GetData:
-    def __init__(self,url,speed,direction,camera):
-        self.speed = speed
-        self.direction = direction
+    def __init__(self,url,dirSpeed,camera):
+        self.DirSpeed = dirSpeed
         self.camera = camera
         client = Client(url,self.on_message)
 
     def on_message(self,ws,message):
         message = json.loads(message)
-        if(message["action"] == "speed"):
-            self.speed(message["motorL"],message["motorR"])
-        if(message["action"] == "direction"):
-            self.direction(message["motorL"],message["motorR"])
+        if(message["action"] == "movement"):
+            self.DirSpeed(message["motorL"],message["motorR"],message["dirL"],message["dirR"])
         if(message["action"] == "camera"):
             self.camera(message["X"],message["Y"])

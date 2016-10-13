@@ -14,15 +14,11 @@ pwmY.start(5)
 pwmX.ChangeDutyCycle(13)
 pwmY.ChangeDutyCycle(13)
 
-def callbackSpeed(motorL,motorR):
-    print "speed "+motorR +" "+ motorL
-def callbackDirection(motorL,motorR):
-    print "direction "+motorR +" "+ motorL
+def callbackSpeedDir(motorL,motorR,dirL,dirR):
+    print "speed "+motorR +" "+ motorL + " " + dirL + " "+ dirR
 def callbackCamera(x,y):
     print "x= "+x+" y= "+y
-    pwmX.ChangeDutyCycle(x)
-    pwmY.ChangeDutyCycle(y)
 
-url = "10.33.28.197:8888/wsRPI"
+url = "10.33.10.18:8888/wsRPI"
 
-data = GetData(url,callbackSpeed,callbackDirection,callbackCamera)
+data = GetData(url,callbackSpeedDir,callbackCamera)

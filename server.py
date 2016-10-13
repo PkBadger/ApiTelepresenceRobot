@@ -67,11 +67,26 @@ class SocketIOSHandler(websocket.WebSocketHandler):
 # Motor control Handlers         #
 #--------------------------------#
 
-#Speed Control receive motorR and motorL
-class SpeedHandler(websocket.WebSocketHandler):
+
+class MovementHandler(websocket.WebSocketHandler):
     def get(self):
         motorR = self.get_argument("motorR")
         motorL = self.get_argument("motorL")
+        dirR = self.get_argument("dirR")
+        dirL = self.get_argument("dirL")
+        data = {"action":"movement","motorR":motorR,"motorL":motorL,"dirR":dirR,"dirL":dirL}
+        for c in clRpi:
+            c.write_message(data)
+
+    def post(self):
+        pass
+#Speed Control receive motorR and motorL
+class SpeedHandler(websocket.WebSocketHandler):
+    def get(self):
+        motorR = self.get_argument("SpeedR")
+        motorL = self.get_argument("SpeedL")
+        motorR = self.get_argument("DirectionR")
+        motorL = self.get_argument("DirectionL")
         data = {"action":"speed","motorR":motorR,"motorL":motorL}
         for c in clRpi:
             c.write_message(data)
@@ -154,6 +169,7 @@ def main():
             (r"/MotorDirection",DirectionHandler),
             (r"/switch",SwitchHandler),
             (r"/cameraPos",CameraPosHandler),
+            (r"/movement",MovementHandler)
             ],
         cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
         xsrf_cookies=True,
