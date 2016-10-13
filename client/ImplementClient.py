@@ -44,8 +44,8 @@ bus = smbus2.SMBus(1) #Master
 datos = [0,0,0,0,0,0]
 writeNumber(gyro,0x6B,0) # PWR_MGMT_1 register
 
-GyZ1= read_number(gyro,0x47)
-GyZ2 = read_number(gyro,0x48)
+GyZ1= readNumber(gyro,0x47)
+GyZ2 = readNumber(gyro,0x48)
 datos[4] = GyZ1
 datos[5] = GyZ2
 writeBlock(arduino,0,datos)
