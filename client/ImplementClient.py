@@ -36,7 +36,7 @@ pwmY.ChangeDutyCycle(13)
 def callbackSpeedDir(motorL,motorR,dirL,dirR):
 
     print "speed "+motorR +" "+ motorL + " " + dirL + " "+ dirR
-    data = [int(float((motorR))),int(float(motorL))]
+    data = [int(float((motorR))),int(float(motorL)),int(float(dirL)),int(float(dirR))]
     writeBlock(arduino,0,data)
 
 
