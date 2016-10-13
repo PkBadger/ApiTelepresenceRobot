@@ -42,13 +42,13 @@ def readNumber(address,register):            #funcion para leer el número
 
 bus = smbus2.SMBus(1) #Master
 datos = [0,0,0,0,0,0]
-writeNumber(gyro,0x6B,0) # PWR_MGMT_1 register
+#writeNumber(gyro,0x6B,0) # PWR_MGMT_1 register
 
-GyZ1= readNumber(gyro,0x47)
-GyZ2 = readNumber(gyro,0x48)
-datos[4] = GyZ1
-datos[5] = GyZ2
-writeBlock(arduino,0,datos)
+#GyZ1= readNumber(gyro,0x47)
+#GyZ2 = readNumber(gyro,0x48)
+#datos[4] = GyZ1
+#datos[5] = GyZ2
+#writeBlock(arduino,0,datos)
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(27, GPIO.OUT)
@@ -71,9 +71,11 @@ def callbackSpeedDir(motorL,motorR,dirL,dirR):
     datos[1] = data[1]
     datos[2] = data[2]
     datos[3] = data[3]
-    writeNumber(gyro,0x6B,0)
+    datos[4] = 0
+    datos[5] = 0
+    #writeNumber(gyro,0x6B,0)
 
-    #writeBlock(arduino,0,data)
+    writeBlock(arduino,0,data)
 
 
 def callbackCamera(x,y):
