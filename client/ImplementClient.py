@@ -82,3 +82,4 @@ def callbackCamera(x,y):
 url = "10.33.10.18:8888/wsRPI"
 
 data = GetData(url,callbackSpeedDir,callbackCamera)
+time.sleep(.05)
