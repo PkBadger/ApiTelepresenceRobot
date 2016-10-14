@@ -66,15 +66,17 @@ pwmY.ChangeDutyCycle(13)
 def callbackSpeedDir(motorL,motorR,dirL,dirR):
 
     print "speed "+motorR +" "+ motorL + " " + dirL + " "+ dirR
-    data = [int(float((motorR))),int(float(motorL)),int(float(dirL)),int(float(dirR))]
+    data = [int(float((motorL))),int(float(motorR)),int(float(dirL)),int(float(dirR))]
     datos[0] = data[0]
     datos[1] = data[1]
     datos[2] = data[2]
     datos[3] = data[3]
     datos[4] = 0
     datos[5] = 0
+    if abs(data[0]-data[1]) == 1:
+        data[1] = data[0]
     #writeNumber(gyro,0x6B,0)
-
+    print (data)
     writeBlock(arduino,0,data)
 
 
