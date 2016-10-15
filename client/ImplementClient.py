@@ -60,8 +60,6 @@ GPIO.setup(18, GPIO.OUT)
 pwmY = GPIO.PWM(18, 100)
 pwmY.start(5)
 
-pwmX.ChangeDutyCycle(13)
-pwmY.ChangeDutyCycle(13)
 
 def callbackSpeedDir(motorL,motorR,dirL,dirR):
 
@@ -78,6 +76,8 @@ def callbackSpeedDir(motorL,motorR,dirL,dirR):
     #writeNumber(gyro,0x6B,0)
     print (data)
     writeBlock(arduino,0,data)
+    pwmX.ChangeDutyCycle(float(x))
+    pwmY.ChangeDutyCycle(float(y))
 
 
 def callbackCamera(x,y):
