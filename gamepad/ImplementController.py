@@ -38,6 +38,8 @@ class Controller(Thread):
         print "Thread Controller running with gamepad %s\n" % self.gamepad
 
     def run(self):
+        holder = 0
+
         for event in self.gamepad.read_loop():
             #R2
             if(event.code == 5):
@@ -45,7 +47,9 @@ class Controller(Thread):
                 if self.args.cesar:
                     self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
                 else:
-                    self.sender.send(get_directions(self.data_package["axis_x"], self.data_package["axis_y"]))
+                    #holder = self.data_package["r2"]
+                    self.sender.send(get_directions(self.data_package["axis_x"],
+                    self.data_package["l2"], self.data_package["r2"]))
                 """
                 if(not self.direccion):
                     self.data.sendDirection(1,1)
@@ -57,7 +61,10 @@ class Controller(Thread):
                 if self.args.cesar:
                     self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
                 else:
-                    self.sender.send(get_directions(self.data_package["axis_x"], self.data_package["axis_y"]))
+                    self.sender.send(get_directions(self.data_package["axis_x"],
+                    self.data_package["l2"], self.data_package["r2"]))
+                    #holder = -self.data_package["l2"]
+                    #self.sender.send(get_directions(self.data_package["axis_x"], -self.data_package["l2"]))
                 """if(self.direccion):
                     self.data.sendDirection(0,0)
                     self.direccion= False
@@ -74,17 +81,22 @@ class Controller(Thread):
             elif(event.code == 0 and event.type == 3):
                 self.data_package["axis_x"] = translate_grades(event.value, 'x')
                 if self.args.julian:
-                    self.sender.send(get_directions(self.data_package["axis_x"], self.data_package["axis_y"]))
+                    #self.sender.send(get_directions(self.data_package["axis_x"], holder))
+                    self.sender.send(get_directions(self.data_package["axis_x"],
+                    self.data_package["l2"], self.data_package["r2"]))
                 elif self.args.cesar:
                     self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
                 else:
                     self.sender.send(self.data_package)
 
             #Left Stick Y
+
             elif(event.code == 1 and event.type == 3):
                 self.data_package["axis_y"] = translate_grades(event.value, 'y')
                 if self.args.julian:
-                    self.sender.send(get_directions(self.data_package["axis_x"], self.data_package["axis_y"]))
+                    pass
+                    #self.sender.send(get_directions(self.data_package["axis_x"], holder))
+                    #self.sender.send(get_directions(self.data_package["axis_x"], self.data_package["l2"], self.data_package["r2"))
                 elif self.args.cesar:
                     self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
                 else:
@@ -107,10 +119,10 @@ class Sender(Thread):
         print "Thread Sender running...\n"
 
     def send(self, values):
+        motorL, motorR = values['left_val'], values['right_val']
+        directionL, directionR = values['to_left'], values['to_right']
         print values
-        #motorL, motorR = values['left_val'], values['right_val']
-        #directionL, directionR = values['to_left'], values['to_right']
-        #self.data.sendSpeedAndDirection(motorL, motorR, directionL, directionR)
+        self.data.sendSpeedAndDirection(motorL, motorR, directionL, directionR)
 
 if __name__ == '__main__':
     controller_thread = Controller()

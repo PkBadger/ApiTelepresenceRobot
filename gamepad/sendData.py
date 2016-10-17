@@ -17,7 +17,6 @@ class SendData:
         r = requests.get(url)
 
     def sendSpeedAndDirection(self, motorL, motorR, dirL, dirR):
-        print "Sending data.."
         url = self.url+"/movement?motorL="+str(motorL)+"&motorR="+str(motorR)+"&dirL="+str(dirL)+"&dirR="+str(dirR)
         r = requests.get(url)
 
