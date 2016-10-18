@@ -1,15 +1,13 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 from client import GetData
-import RPi.GPIO as GPIO
 import time             #libreria time para delays
+import os
 from smbus2 import SMBus
 import smbus2
 import subprocess
-#from __main__ import *
 arduino = 0x08              #se define la dirección del arduino esclavo
 gyro = 0x68                 #se define la dirección del gyro
-
 
 def writeBlock(address,register,data):
         flag=1
@@ -39,30 +37,15 @@ def readNumber(address,register):            #funcion para leer el número
                         flag=1
 
         return number            #regresa la variable number
+def writeServo(servo,percent):
+    string = "echo "+str(servo)+"="+str(percent)+"% > /dev/servoblaster"
+    os.system(string)
 
 bus = smbus2.SMBus(1) #Master
 datos = [0,0,0,0,0,0]
-#writeNumber(gyro,0x6B,0) # PWR_MGMT_1 register
+os.system("sudo ./servod --pcm")
 
-#GyZ1= readNumber(gyro,0x47)
-#GyZ2 = readNumber(gyro,0x48)
-#datos[4] = GyZ1
-#datos[5] = GyZ2
-#writeBlock(arduino,0,datos)
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(27, GPIO.OUT)
-pwmX = GPIO.PWM(27, 100)
-pwmX.start(5)
-
-
-GPIO.setup(18, GPIO.OUT)
-pwmY = GPIO.PWM(18, 100)
-pwmY.start(5)
-
-
-def callbackSpeedDir(motorL,motorR,dirL,dirR):
-
+def callbackSpeedDir(motorL,motorR,dirL,dirR): #Callback del motor
     print "speed "+motorR +" "+ motorL + " " + dirL + " "+ dirR
     data = [int(float((motorL))),int(float(motorR)),int(float(dirL)),int(float(dirR))]
     datos[0] = data[0]
@@ -73,15 +56,16 @@ def callbackSpeedDir(motorL,motorR,dirL,dirR):
     datos[5] = 0
     if abs(data[0]-data[1]) == 1:
         data[1] = data[0]
-    #writeNumber(gyro,0x6B,0)
     print (data)
     writeBlock(arduino,0,data)
-    pwmX.ChangeDutyCycle(float(x))
-    pwmY.ChangeDutyCycle(float(y))
 
 
-def callbackCamera(x,y):
+def callbackCamera(x,y):   #callback de la camara
     print "x= "+x+" y= "+y
+    convertx =float(x)/1.8
+    converty = float(y)/1.8
+    writeServo(2,convertx)
+    writeServo(3,converty)
 
 url = "10.33.10.18:8888/wsRPI"
 
