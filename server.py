@@ -17,6 +17,7 @@ define("debug", default=False, help="run in debug mode")
 #--------------------------------------#
 clRpi = []
 clIOS = []
+clLights = []
 '''
 class MainHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
@@ -62,6 +63,22 @@ class SocketIOSHandler(websocket.WebSocketHandler):
     def on_close(self):
         if self in clIOS:
             clIOS.remove(self)
+#Light handler
+class SocketLightHandler(websocket.WebSocketHandler):
+    def check_origin(self, origin):
+        print("origin")
+        return True
+
+    def open(self):
+        print("open")
+        if self not in clLights:
+            clLights.append(self)
+        print(clLights)
+
+    def on_close(self):
+        print("on_close")
+        if self in clLights:
+            clLights.remove(self)
 
 #--------------------------------#
 # Motor control Handlers         #
@@ -154,6 +171,17 @@ class CameraPosHandler(websocket.WebSocketHandler):
         pass
 
 #--------------------------------------#
+#Light Handler                         #
+#--------------------------------------#
+class LightHandler(websocket.WebSocketHandler):
+    def get(self):
+        light = self.get_argument("light")
+        data = {"action":"light","light":light}
+        for c in clLights:
+            c.write_message(data)
+    def post(self):
+        pass
+#--------------------------------------#
 # Main function                        #
 #--------------------------------------#
 
@@ -163,13 +191,15 @@ def main():
         [
             (r"/wsRPI", SocketRPIHandler),
             (r"/wsIOS", SocketIOSHandler),
+            (r"/wsLights", SocketLightHandler),
             (r"/temp", TempHandler),
             (r"/speedSensor", SpeedSensorHandler),
             (r"/MotorSpeed", SpeedHandler),
             (r"/MotorDirection",DirectionHandler),
             (r"/switch",SwitchHandler),
             (r"/cameraPos",CameraPosHandler),
-            (r"/movement",MovementHandler)
+            (r"/movement",MovementHandler),
+            (r"/light",LightHandler)
             ],
         cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
         xsrf_cookies=True,
