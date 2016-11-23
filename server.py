@@ -177,7 +177,7 @@ class LightHandler(websocket.WebSocketHandler):
     def get(self):
         light = self.get_argument("light")
         data = {"action":"light","light":light}
-        for c in clLights:
+        for c in clRpi:
             c.write_message(data)
     def post(self):
         pass

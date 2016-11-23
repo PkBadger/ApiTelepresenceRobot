@@ -59,9 +59,9 @@ def callbackCamera(x,y):
     writeServo(2,convertx)
     writeServo(3,converty)
 
+def callbackLight(light):
+    print light
+
 
 url = "192.168.42.16:8888/wsRPI"
-data = GetData(url,callbackSpeedDir,callbackCamera)
-time.sleep(.05)
-
-
+data = GetData(url,callbackSpeedDir,callbackCamera,callbackLight)
