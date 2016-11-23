@@ -61,8 +61,11 @@ class Controller(Thread):
 
             #D-Pad Y
             elif(event.code == 17):
-                toggleLights = 0 if toggleLights == 1 else 1
-                self.sender.sendLights(toggleLights)
+                if event.value == -1:
+                    toggleLights = 0 if toggleLights == 1 else 1
+                    self.sender.sendLights(toggleLights)
+                else:
+                    pass
 
             #Left Stick X
             elif(event.code == 0 and event.type == 3):
@@ -103,11 +106,11 @@ class Sender(Thread):
     def send(self, values):
         motorL, motorR = values['left_val'], values['right_val']
         directionL, directionR = values['to_left'], values['to_right']
-        print values
+        print(values)
         self.data.sendSpeedAndDirection(motorL, motorR, directionL, directionR)
 
     def sendLights(self, toggle):
-        print toggle
+        print(toggle)
         self.data.sendLights(toggle)
 
 if __name__ == '__main__':
