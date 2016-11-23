@@ -29,17 +29,14 @@ class Controller(Thread):
         parser.add_argument("-j", "--julian", action="store_true")
         parser.add_argument("-c", "--cesar", action="store_true")
         self.args = parser.parse_args()
-
         self.data_package = self.build_package((0,0,0,0))
 
         self.sender = Sender()
         self.sender.start()
-
         print "Thread Controller running with gamepad %s\n" % self.gamepad
 
     def run(self):
-        holder = 0
-
+        toggleLights = 0
         for event in self.gamepad.read_loop():
             #R2
             if(event.code == 5):
@@ -50,11 +47,7 @@ class Controller(Thread):
                     #holder = self.data_package["r2"]
                     self.sender.send(get_directions(self.data_package["axis_x"],
                     self.data_package["l2"], self.data_package["r2"]))
-                """
-                if(not self.direccion):
-                    self.data.sendDirection(1,1)
-                  self.direccion = True
-                """
+
             #L2
             elif(event.code == 2):
                 self.data_package["l2"] = int(event.value)
@@ -65,17 +58,11 @@ class Controller(Thread):
                     self.data_package["l2"], self.data_package["r2"]))
                     #holder = -self.data_package["l2"]
                     #self.sender.send(get_directions(self.data_package["axis_x"], -self.data_package["l2"]))
-                """if(self.direccion):
-                    self.data.sendDirection(0,0)
-                    self.direccion= False
-                """
-            #D-Pad X
-            elif(event.code == 16):
-                self.x_value = event.value
 
             #D-Pad Y
             elif(event.code == 17):
-                self.y_value = -event.value
+                toggleLights = 0 if toggleLights == 1 else 1
+                self.sender.sendLights(toggleLights)
 
             #Left Stick X
             elif(event.code == 0 and event.type == 3):
@@ -90,7 +77,6 @@ class Controller(Thread):
                     self.sender.send(self.data_package)
 
             #Left Stick Y
-
             elif(event.code == 1 and event.type == 3):
                 self.data_package["axis_y"] = translate_grades(event.value, 'y')
                 if self.args.julian:
@@ -105,13 +91,9 @@ class Controller(Thread):
             else:
                 continue
 
-            #self.data.sendSpeed(l2_value,r2_value)
-            #self.data.sendDirection(x_value,y_value)
-
 class Sender(Thread):
     def __init__(self):
         Thread.__init__(self)
-
         ip, port = "localhost", 8888
         self.data = SendData("http://" + ip + ":" + str(port))
 
@@ -123,6 +105,10 @@ class Sender(Thread):
         directionL, directionR = values['to_left'], values['to_right']
         print values
         self.data.sendSpeedAndDirection(motorL, motorR, directionL, directionR)
+
+    def sendLights(self, toggle):
+        print toggle
+        self.data.sendLights(toggle)
 
 if __name__ == '__main__':
     controller_thread = Controller()

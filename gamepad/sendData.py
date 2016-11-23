@@ -20,3 +20,6 @@ class SendData:
         url = self.url+"/movement?motorL="+str(motorL)+"&motorR="+str(motorR)+"&dirL="+str(dirL)+"&dirR="+str(dirR)
         r = requests.get(url)
 
+    def sendLights(self, toggle):
+        url = self.url+"/light?light="+str(toggle)
+        r = requests.get(url)
