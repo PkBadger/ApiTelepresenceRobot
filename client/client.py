@@ -31,7 +31,7 @@ class Client:
 #-----------------------------------------#
 
 class GetData:
-    def __init__(self,url,dirSpeed,camera,light):
+    def __init__(self,url,dirSpeed,camera,light,brake):
         self.DirSpeed = dirSpeed
         self.camera = camera
         client = Client(url,self.on_message)
