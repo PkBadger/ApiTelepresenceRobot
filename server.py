@@ -182,6 +182,17 @@ class LightHandler(websocket.WebSocketHandler):
     def post(self):
         pass
 #--------------------------------------#
+#Brake Handler                         #
+#--------------------------------------#
+class BrakeHandler(websocket.WebSocketHandler):
+    def get(self):
+        brake = self.get_argument("brake")
+        data = {"action":"brake","brake":brake}
+        for c in clRpi:
+            c.write_message(data)
+    def post(self):
+        pass
+#--------------------------------------#
 # Main function                        #
 #--------------------------------------#
 
@@ -199,7 +210,8 @@ def main():
             (r"/switch",SwitchHandler),
             (r"/cameraPos",CameraPosHandler),
             (r"/movement",MovementHandler),
-            (r"/light",LightHandler)
+            (r"/light",LightHandler),
+            (r"/brake",BrakeHandler)
             ],
         cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
         xsrf_cookies=True,

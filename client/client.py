@@ -31,9 +31,11 @@ class Client:
 #-----------------------------------------#
 
 class GetData:
-    def __init__(self,url,dirSpeed,camera,light):
+    def __init__(self,url,dirSpeed,camera,light,brake):
         self.DirSpeed = dirSpeed
         self.camera = camera
+        self.light = light
+        self.brake = brake
         client = Client(url,self.on_message)
 
     def on_message(self,ws,message):
@@ -44,3 +46,5 @@ class GetData:
             self.camera(message["X"],message["Y"])
         if(message["action"] == "light"):
             self.light(message["light"])
+        if(message["action"] == "brake"):
+            self.brake(message["brake"])
