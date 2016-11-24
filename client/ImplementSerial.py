@@ -62,6 +62,9 @@ def callbackCamera(x,y):
 def callbackLight(light):
     print light
 
+def callbackBrake(brake):
+    print brake
+
 
 url = "192.168.42.16:8888/wsRPI"
-data = GetData(url,callbackSpeedDir,callbackCamera,callbackLight)
+data = GetData(url,callbackSpeedDir,callbackCamera,callbackLight,callbackBrake)
