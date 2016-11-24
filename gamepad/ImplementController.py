@@ -37,27 +37,40 @@ class Controller(Thread):
 
     def run(self):
         toggleLights = 0
+        lastAceptedR2 = 0
+        lastAceptedL2 = 0
+        lastAceptedX = 0
         for event in self.gamepad.read_loop():
             #R2
             if(event.code == 5):
-                self.data_package["r2"] = int(event.value)
-                if self.args.cesar:
-                    self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
-                else:
-                    #holder = self.data_package["r2"]
-                    self.sender.send(get_directions(self.data_package["axis_x"],
-                    self.data_package["l2"], self.data_package["r2"]))
+                value = int(event.value)
+                if abs(int(value/85)*85 - lastAceptedR2) >= 85:
+
+                    lastAceptedR2 = int(value/85) * 85
+                    self.data_package["r2"] = lastAceptedR2
+                    if self.args.cesar:
+                        self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
+                    else:
+                        #holder = self.data_package["r2"]
+                        self.sender.send(get_directions(self.data_package["axis_x"],
+                        self.data_package["l2"], self.data_package["r2"]))
 
             #L2
             elif(event.code == 2):
-                self.data_package["l2"] = int(event.value)
-                if self.args.cesar:
-                    self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
-                else:
-                    self.sender.send(get_directions(self.data_package["axis_x"],
-                    self.data_package["l2"], self.data_package["r2"]))
-                    #holder = -self.data_package["l2"]
-                    #self.sender.send(get_directions(self.data_package["axis_x"], -self.data_package["l2"]))
+
+                value = int(event.value)
+                if abs(int(value/85)*85 - lastAceptedL2) >= 85:
+
+                    lastAceptedL2 = int(value/85) * 85
+                    self.data_package["l2"] = lastAceptedL2
+
+                    if self.args.cesar:
+                        self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
+                    else:
+                        self.sender.send(get_directions(self.data_package["axis_x"],
+                        self.data_package["l2"], self.data_package["r2"]))
+                        #holder = -self.data_package["l2"]
+                        #self.sender.send(get_directions(self.data_package["axis_x"], -self.data_package["l2"]))
 
             #D-Pad Y
             elif(event.code == 17):
@@ -66,15 +79,25 @@ class Controller(Thread):
 
             #Left Stick X
             elif(event.code == 0 and event.type == 3):
-                self.data_package["axis_x"] = translate_grades(event.value, 'x')
-                if self.args.julian:
-                    #self.sender.send(get_directions(self.data_package["axis_x"], holder))
-                    self.sender.send(get_directions(self.data_package["axis_x"],
-                    self.data_package["l2"], self.data_package["r2"]))
-                elif self.args.cesar:
-                    self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
-                else:
-                    self.sender.send(self.data_package)
+                value = translate_grades(event.value, 'x')
+                if value >= 250:
+                    value = 255
+                if value <= -250:
+                    value = -255
+                if abs(int(value/85)*85 - lastAceptedX) >= 85:
+
+                    lastAceptedX = int(value/85) * 85
+                    self.data_package["axis_x"] = lastAceptedX
+
+
+                    if self.args.julian:
+                        #self.sender.send(get_directions(self.data_package["axis_x"], holder))
+                        self.sender.send(get_directions(self.data_package["axis_x"],
+                        self.data_package["l2"], self.data_package["r2"]))
+                    elif self.args.cesar:
+                        self.sender.send(get_directions2(self.data_package["axis_x"],self.data_package["axis_y"],self.data_package["r2"]))
+                    else:
+                        self.sender.send(self.data_package)
 
             #Left Stick Y
             elif(event.code == 1 and event.type == 3):
