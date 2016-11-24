@@ -23,3 +23,7 @@ class SendData:
     def sendLights(self, toggle):
         url = self.url+"/light?light="+str(toggle)
         r = requests.get(url)
+
+    def sendBreak(self, toggle):
+        url = self.url+"/break?break="+str(toggle)
+        r = requests.get(url)

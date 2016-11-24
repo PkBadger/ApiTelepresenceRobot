@@ -37,7 +37,10 @@ class Controller(Thread):
 
     def run(self):
         toggleLights = 0
+        toggleBreak = 0
+
         for event in self.gamepad.read_loop():
+            print(event)
             #R2
             if(event.code == 5):
                 self.data_package["r2"] = int(event.value)
@@ -64,6 +67,13 @@ class Controller(Thread):
                 if event.value == -1:
                     toggleLights = 0 if toggleLights == 1 else 1
                     self.sender.sendLights(toggleLights)
+                else:
+                    pass
+
+            elif(event.code == 305):
+                if event.value == 1:
+                    toggleBreak = 0 if toggleBreak == 1 else 1
+                    self.sender.sendBreak(toggleBreak)
                 else:
                     pass
 
@@ -112,6 +122,10 @@ class Sender(Thread):
     def sendLights(self, toggle):
         print(toggle)
         self.data.sendLights(toggle)
+
+    def sendBreak(self, toggle):
+        print(toggle)
+        self.data.sendBreak(toggle)
 
 if __name__ == '__main__':
     controller_thread = Controller()
